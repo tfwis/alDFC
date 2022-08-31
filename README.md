@@ -33,7 +33,7 @@ devtools::install_github("tfwis/alDFC")
 
 Characterize target cluster by small subset of genes.
 
-### 1. Set target cell clusters
+### 1. Set target clusters
 
 Perform preprocesssing and standard analysis following [Seurat tutorial](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html). The data was also provided in tutorial.
 
@@ -57,7 +57,7 @@ Here, set cluster8 as target cluster.
 
 ### 2. DFC extraction
 
-Using `Seurat` object and target number, `dfc()` function extract DFC subset.
+Using `Seurat` object and target number, `dfc()` function extract DFC subset. `target_cluster` can be given a vector; `c(3,8)`
 
 ```r
 library(alDFC)
