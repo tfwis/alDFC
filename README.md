@@ -4,9 +4,11 @@ DFC extraction with Adaptive Lasso
 ## What’s this for ?
 
 
+Characterizing cell populations with 
+1. too many differentially expessed genes (DEG) due to the statistical high sensitivity of single cell data.
+2. no clear characteristic genes.
 
-
-This R package `alDFC` is dedicated for the purpose, and extract a small gene subset characterizing target cell populations.
+This R package `alDFC` is dedicated for the purpose, and extract a small gene subset characterizing target cell populations with discrimination method.
 
 Please see also [*Discriminative feature of cells characterizes cell populations of interest by a small subset of genes.*](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1009579)
 
