@@ -57,10 +57,14 @@ Here, set cluster8 as target cluster.
 
 ### 2. DFC extraction
 
+Using `Seurat` object and target number, `dfc()` function extract DFC subset.
+
 ```r
 library(alDFC)
 dfc_res <- dfc(pbmc, target_clusters = 8, return_Model = TRUE)
 ```
+
+The solution path and the cross varidation result of each model are checked as follows.
 
 ```r
 layout(matrix(1:4, ncol=2))
@@ -88,8 +92,10 @@ mtext(side=1, text = "log(Lambda)", line =2)
 
 ![regress_plot](man/regression_results.png)
 
-### 3. 
+### 3. DFC classification
 
+Features in DFC subset are classified into about three groups; *Strong*, *Weak* or *Niche* feature.
+`dfc_classify()` function is for the classification.
 ```r
 dfc_class <- dfc_classify(dfc_mod$weights,pbmc)
 ```
