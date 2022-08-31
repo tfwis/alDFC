@@ -4,10 +4,9 @@ DFC extraction with Adaptive Lasso
 ## What’s this for ?
 
 
-Designing *good* custom DNA barcodes and selecting a *good* subset from
-oligo pool in your laboratory involves a problem of combinatorial optimizations.
 
-This R package `alDFC` is dedicated for the purpose, and extract a small gene set characterizing target cell populations.
+
+This R package `alDFC` is dedicated for the purpose, and extract a small gene subset characterizing target cell populations.
 
 Please see also [*Discriminative feature of cells characterizes cell populations of interest by a small subset of genes.*](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1009579)
 
