@@ -1,8 +1,8 @@
 # alDFC
+
 DFC extraction with Adaptive Lasso
 
 ## What’s this for ?
-
 
 Characterizing cell populations with 
 1. too many differentially expessed genes (DEG) due to the statistical high sensitivity of single cell data.
@@ -10,7 +10,7 @@ Characterizing cell populations with
 
 This R package `alDFC` is dedicated for the purpose, and extract a small gene subset characterizing target cell populations with discriminative method.
 
-Please see also [*Discriminative feature of cells characterizes cell populations of interest by a small subset of genes.*](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1009579)
+Please see also [*Discriminative feature of cells characterizes cell populations of interest by a small subset of genes. (Fujii and Maehara et. al. PLOS Comput. Biol. 2021)*](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1009579)
 
 ## Installation
 
@@ -24,20 +24,17 @@ devtools::install_github("tfwis/alDFC")
 
 ## The workflow
 
-* Step1: Prepare single cell data, especially single cell RNA-seq
-* Step2: Perform standard single cell analysis procedure and set target cell cluster
-* Step3: Characterize target cell cluster by discrimination
-* Step4: Classify DFC set into 3 groups; *Strong*, *Weak* or *Niche*
+* Step1: Perform single cell data analysis and find target cell cluster
+* Step2: Characterize target cell cluster by discrimination
+* Step3: Classify DFC set into 3 groups; *Strong*, *Weak* or *Niche*
 
-## Tutorial using `Seurat`
-
-### The purpose
-
-Characterize target cluster by small subset of genes.
+## Tutorial
 
 ### 1. Set target clusters
 
-Perform preprocesssing and standard analysis following [Seurat tutorial](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html). The data was also provided in the tutorial.
+Perform preprocesssing and standard analysis. Here, following [Seurat tutorial](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html). The sample data was also provided in the tutorial.
+
+If you are not `Seurat` user, please create scaled data matrix and `target_vector` to identify the cluster of each cell.
 
 ```r
 library(Seurat)
@@ -59,6 +56,8 @@ Here, set cluster8 as target cluster.
 
 ### 2. DFC extraction
 
+### 2.1. With `Seurat`
+
 Using `Seurat` object and target number, `dfc()` function extract DFC subset. 
 
 ```r
@@ -67,6 +66,24 @@ dfc_res <- dfc(pbmc, target_clusters = 8, return_Model = TRUE)
 ```
 
 `target_cluster` can be given a vector; `c(3,8)`
+
+### 2.2. Other
+
+Convert your data into `dgCMatrix`.
+
+```r
+library(MASS)
+sdata <- as(data,'sparseMatrix')
+```
+
+Then run,
+
+```r
+library(alDFC)
+dfc_res <- dfc(sdata, target_label, return_Model = TRUE)
+```
+
+`target_label` is a binary vector to identify target clusters.
 
 The solution path plots and the cross varidation results of each model are checked as follows.
 
@@ -101,5 +118,19 @@ mtext(side=1, text = "log(Lambda)", line =2)
 Features in DFC subset are classified into about three groups; *Strong*, *Weak* or *Niche* feature. `dfc_classify()` function is for the classification.
 
 ```r
+## Seurat
 dfc_class <- dfc_classify(dfc_mod$weights,pbmc)
+
+## Other
+dfc_class <- dfc_classify(dfc_mod$weights,sdata,cluster_vector)
 ```
+
+`cluster_label` is a vector to identify the cluster where each cell contained.
+
+## Advanced options
+
+### Sure independence screening (SIS)
+
+Single cell data analysis using adaptive lasso has high computational cost. To lower cost, alDFC is implemented *Sure independence screening* (SIS). In default, SIS is performed before adaptive lasso. To obtain unscreened result, please set `SIS = FALSE`. However, longer computational time is expected then.
+
+### 

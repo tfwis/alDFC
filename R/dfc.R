@@ -72,7 +72,7 @@ AdaLasso <- function(
   }
 }
 
-#' Sure independencd screening for pre-screening of features.
+#' Sure independence screening for pre-screening of features.
 #'
 #' @param data scaled count gene x cell matrix
 #' @param label logical or binary vector labeling target clusters
@@ -121,7 +121,7 @@ sis <- function(data, label, min_feature = NULL, max_feature = NULL)
 #' @export
 #'
 dfc <- function(
-    data, target_clusters=NULL, target_label=NULL,
+    data, target_clusters = NULL, target_label = NULL,
     gamma = 1, return_Model = FALSE, seed = NULL,
     lambda_penalty = "1se", lambda_weight = "1se",
     SIS = TRUE, min_feature = NULL, max_feature = NULL
@@ -155,7 +155,7 @@ dfc <- function(
 #' return_Model set FALSE, only weigths are returned.}
 #'
 dfc.Seurat <- function(
-    data, target_clusters, target_label=NULL,
+    data, target_clusters, target_label = NULL,
     gamma = 1, return_Model = FALSE, seed = NULL,
     lambda_penalty = "1se", lambda_weight = "1se",
     SIS = TRUE, min_feature = NULL, max_feature = NULL
@@ -199,7 +199,7 @@ dfc.Seurat <- function(
 #' return_Model set FALSE, only weigths are returned.}
 #'
 dfc.dgCMatrix <- function(
-    data, target_clusters=NULL, target_label,
+    data, target_clusters = NULL, target_label,
     gamma = 1, return_Model = FALSE, seed = NULL,
     SIS = TRUE, min_feature = NULL, max_feature = NULL,
     lambda_penalty = "1se", lambda_weight = "1se"
