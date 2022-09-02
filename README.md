@@ -14,7 +14,7 @@ Please see also [*Discriminative feature of cells characterizes cell populations
 
 ## Installation
 
-`install.packages("devtools")` if you haven't installed it.
+`install.packages("devtools")` if you haven"t installed it.
 
 Then run,
 
@@ -38,16 +38,16 @@ If you are not `Seurat` user, please create scaled data matrix and `target_vecto
 
 ```r
 library(Seurat)
-pbmc.data <- Read10X(data.dir = "filtered_gene_bc_matrices/hg19/")
-pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3, min.features = 200)
+pbmc.data <- Read10X(data.dir="filtered_gene_bc_matrices/hg19/")
+pbmc <- CreateSeuratObject(counts=pbmc.data, project="pbmc3k", min.cells=3, min.features=200)
 pbmc <- NormalizeData(pbmc)
 pbmc <- ScaleData(pbmc)
-pbmc <- FindVariableFeatures(pbmc,nfeatures = 2000)
+pbmc <- FindVariableFeatures(pbmc, nfeatures=2000)
 pbmc <- RunPCA(pbmc, features=VariableFeatures(pbmc))
-pbmc <- FindNeighbors(object = pbmc)
+pbmc <- FindNeighbors(object=pbmc)
 pbmc <- FindClusters(pbmc)
-pbmc <- RunUMAP(pbmc,dims = 1:10)
-DimPlot(pbmc,reduction = 'umap')
+pbmc <- RunUMAP(pbmc, dims=1:10)
+DimPlot(pbmc, reduction="umap")
 ```
 
 ![pbmc_umap](man/pbmc_umap.png)
@@ -62,7 +62,7 @@ Using `Seurat` object and target number, `dfc()` function extract DFC subset.
 
 ```r
 library(alDFC)
-dfc_res <- dfc(pbmc, target_clusters = 8, return_Model = TRUE)
+dfc_res <- dfc(pbmc, target_clusters=8, return_Model=TRUE)
 ```
 
 `target_cluster` can be given a vector; `c(3,8)`
@@ -73,7 +73,7 @@ Convert your data into `dgCMatrix`.
 
 ```r
 library(MASS)
-sdata <- as(data,'sparseMatrix')
+sdata <- as(data, "sparseMatrix")
 ```
 
 Then run,
@@ -88,27 +88,27 @@ dfc_res <- dfc(sdata, target_label, return_Model = TRUE)
 The solution path plots and the cross varidation results of each model are checked as follows.
 
 ```r
-layout(matrix(1:4, ncol=2))
+layout(matrix(1:4,ncol=2))
 
 par(mar=c(3.5, 4, 3.5, 2))
-plot(dfc_mod[['Ridge']], xlab="")
-mtext(side=3, text = "Ridge", line =2.3)
-mtext(side=1, text = "log(Lambda)", line =2)
+plot(dfc_mod[["Ridge"]], xlab="")
+mtext(side=3, text="Ridge", line=2.3)
+mtext(side=1, text="log(Lambda)", line=2)
 
 par(mar=c(3.5, 4, 3.5, 2))
-plot(dfc_mod[['Ridge']]$glmnet.fit,xvar = "lambda", xlab="")
-mtext(side=3, text = "Ridge", line =2.3)
-mtext(side=1, text = "log(Lambda)", line =2)
+plot(dfc_mod[["Ridge"]]$glmnet.fit, xvar="lambda", xlab="")
+mtext(side=3, text="Ridge", line=2.3)
+mtext(side=1, text="log(Lambda)", line=2)
 
 par(mar=c(3.5, 4, 3.5, 2))
-plot(dfc_mod[['AdaLasso']], xlab="")
-mtext(side=3, text = "Adaptive Lasso", line =2.3)
-mtext(side=1, text = "log(Lambda)", line =2)
+plot(dfc_mod[["AdaLasso"]], xlab="")
+mtext(side=3, text="Adaptive Lasso", line=2.3)
+mtext(side=1, text="log(Lambda)", line=2)
 
 par(mar=c(3.5, 4, 3.5, 2))
-plot(dfc_mod[['AdaLasso']]$glmnet.fit,xvar = "lambda", xlab="")
-mtext(side=3, text = "Adaptive Lasso", line =2.3)
-mtext(side=1, text = "log(Lambda)", line =2)
+plot(dfc_mod[["AdaLasso"]]$glmnet.fit, xvar ="lambda", xlab="")
+mtext(side=3, text="Adaptive Lasso", line=2.3)
+mtext(side=1, text="log(Lambda)", line=2)
 ```
 
 ![regress_plot](man/regression_results.png)
@@ -119,10 +119,10 @@ Features in DFC subset are classified into about three groups; *Strong*, *Weak* 
 
 ```r
 ## Seurat
-dfc_class <- dfc_classify(dfc_mod$weights,pbmc)
+dfc_class <- dfc_classify(dfc_mod$weights, pbmc)
 
 ## Other
-dfc_class <- dfc_classify(dfc_mod$weights,sdata,cluster_vector)
+dfc_class <- dfc_classify(dfc_mod$weights, sdata, cluster_vector)
 ```
 
 `cluster_label` is a vector to identify the cluster where each cell contained.
@@ -131,6 +131,5 @@ dfc_class <- dfc_classify(dfc_mod$weights,sdata,cluster_vector)
 
 ### Sure independence screening (SIS)
 
-Single cell data analysis using adaptive lasso has high computational cost. To lower cost, alDFC is implemented *Sure independence screening* (SIS). In default, SIS is performed before adaptive lasso. To obtain unscreened result, please set `SIS = FALSE`. However, longer computational time is expected then.
+Single cell data analysis using adaptive lasso has high computational cost and takes long computational time . To reduce them, alDFC has *Sure independence screening* (SIS) implemented. In default, SIS is performed before adaptive lasso. To obtain unscreened result, please set `SIS = FALSE`.
 
-### 
