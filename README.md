@@ -34,7 +34,7 @@ devtools::install_github("tfwis/alDFC")
 
 Perform preprocesssing and standard analysis. Here, following [Seurat tutorial](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html). The sample data was also provided in the tutorial.
 
-If you are not `Seurat` user, please create scaled data matrix and `target_vector` to identify the cluster of each cell.
+If you are not `Seurat` user, please create scaled data matrix and `target_vector`; a binary vector to identify the target cluster.
 
 ```r
 library(Seurat)
@@ -67,7 +67,7 @@ dfc_res <- dfc(pbmc, target_clusters=8, return_Model=TRUE)
 
 `target_cluster` can be given a vector; `c(3,8)`
 
-### 2.2. Other
+### 2.2. Without `Seurat`
 
 Convert your data into `dgCMatrix`.
 
