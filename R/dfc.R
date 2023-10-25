@@ -234,7 +234,7 @@ dfc_classify.Seurat <- function(
     data, dfc_res, assay = NULL,
     rate_threshold = 0.25, cluster_threshold = NULL
     ) {
-  if(inherits(dfc_res,"dfc_models")) {
+  if(!inherits(dfc_res,"dfc_models")) {
     stop("Please, input a DFC result object.")
   }
   dfc_res <- dfc_res$weights
@@ -288,7 +288,7 @@ dfc_classify.matrix <- function(
     data, dfc_res, cluster_label,
     rate_threshold = 0.25, cluster_threshold = NULL
     ) {
-  if(inherits(dfc_res,"dfc_models")) {
+  if(!inherits(dfc_res,"dfc_models")) {
     stop("Please, input a DFC result object.")
   }
   dfc_res <- dfc_res$weights
