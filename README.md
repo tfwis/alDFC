@@ -38,16 +38,19 @@ If you are not `Seurat` user, please create scaled data matrix, extract clusters
 
 ```r
 library(Seurat)
-pbmc.data <- Read10X(data.dir="filtered_gene_bc_matrices/hg19/")
-pbmc <- CreateSeuratObject(counts=pbmc.data, project="pbmc3k", min.cells=3, min.features=200)
-pbmc <- NormalizeData(pbmc)
-pbmc <- ScaleData(pbmc)
-pbmc <- FindVariableFeatures(pbmc, nfeatures=2000)
-pbmc <- RunPCA(pbmc, features=VariableFeatures(pbmc))
-pbmc <- FindNeighbors(object=pbmc)
-pbmc <- FindClusters(pbmc)
-pbmc <- RunUMAP(pbmc, dims=1:10)
-DimPlot(pbmc, reduction="umap")
+library(SeuratData)
+
+InstallData("pbmc3k")
+data("pbmc3k")
+
+pbmc3k <- NormalizeData(pbmc3k)
+pbmc3k <- ScaleData(pbmc3k)
+pbmc3k <- FindVariableFeatures(pbmc3k, nfeatures=2000)
+pbmc3k <- RunPCA(pbmc3k, features=VariableFeatures(pbmc3k))
+pbmc3k <- FindNeighbors(object=pbmc3k)
+pbmc3k <- FindClusters(pbmc3k)
+pbmc3k <- RunUMAP(pbmc3k, dims=1:10)
+DimPlot(pbmc3k, reduction="umap")
 ```
 
 ![pbmc_umap](man/pbmc_umap.png)
@@ -62,10 +65,10 @@ Using `Seurat` object and target number, `dfc()` function extract DFC subset.
 
 ```r
 library(alDFC)
-dfc_res <- dfc(pbmc, target_clusters=8, return_Model=TRUE)
+dfc_res <- dfc(pbmc3k, target_clusters = 8, return_Model = TRUE)
 ```
 
-`target_cluster` can be given a vector; `c(3,8)`
+`target_clusters` can be given a vector; `c(3,8)`
 
 ### 2.2. Without `Seurat`
 
@@ -73,10 +76,10 @@ Convert your data into `matrix` class. Then run,
 
 ```r
 library(alDFC)
-dfc_res <- dfc(mat, target_clusters=8, clsuter_label, return_Model = TRUE)
+dfc_res <- dfc(mat, target_clusters = 8, clsuter_label, return_Model = TRUE)
 ```
 
-`mat` is your data matrix.
+`mat` is your data matrix.  
 `cluster_label` is a vector of the cluster names for each cell.
 
 The solution path plots and the cross varidation results of each model are checked as follows.
@@ -113,7 +116,7 @@ Features in DFC subset are classified into about three groups; *Strong*, *Weak* 
 
 ```r
 ## Seurat
-dfc_class <- dfc_classify(pbmc,dfc_res)
+dfc_class <- dfc_classify(pbmc3k,dfc_res)
 
 ## Other
 dfc_class <- dfc_classify(mat,dfc_res,cluster_label)
