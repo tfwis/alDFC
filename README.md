@@ -34,20 +34,23 @@ devtools::install_github("tfwis/alDFC")
 
 Perform preprocesssing and standard analysis. Here, following [Seurat tutorial](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html). The sample data was also provided in the tutorial.
 
-If you are not `Seurat` user, please create scaled data matrix and `target_vector`; a binary vector to identify the target cluster.
+If you are not `Seurat` user, please create scaled data matrix, extract clusters and set target clusters.
 
 ```r
 library(Seurat)
-pbmc.data <- Read10X(data.dir="filtered_gene_bc_matrices/hg19/")
-pbmc <- CreateSeuratObject(counts=pbmc.data, project="pbmc3k", min.cells=3, min.features=200)
-pbmc <- NormalizeData(pbmc)
-pbmc <- ScaleData(pbmc)
-pbmc <- FindVariableFeatures(pbmc, nfeatures=2000)
-pbmc <- RunPCA(pbmc, features=VariableFeatures(pbmc))
-pbmc <- FindNeighbors(object=pbmc)
-pbmc <- FindClusters(pbmc)
-pbmc <- RunUMAP(pbmc, dims=1:10)
-DimPlot(pbmc, reduction="umap")
+library(SeuratData)
+
+InstallData("pbmc3k")
+data("pbmc3k")
+
+pbmc3k <- NormalizeData(pbmc3k)
+pbmc3k <- ScaleData(pbmc3k)
+pbmc3k <- FindVariableFeatures(pbmc3k, nfeatures=2000)
+pbmc3k <- RunPCA(pbmc3k, features=VariableFeatures(pbmc3k))
+pbmc3k <- FindNeighbors(object=pbmc3k)
+pbmc3k <- FindClusters(pbmc3k)
+pbmc3k <- RunUMAP(pbmc3k, dims=1:10)
+DimPlot(pbmc3k, reduction="umap")
 ```
 
 ![pbmc_umap](man/pbmc_umap.png)
@@ -62,28 +65,22 @@ Using `Seurat` object and target number, `dfc()` function extract DFC subset.
 
 ```r
 library(alDFC)
-dfc_res <- dfc(pbmc, target_clusters=8, return_Model=TRUE)
+dfc_res <- dfc(pbmc3k, target_clusters = 8, return_Model = TRUE)
 ```
 
-`target_cluster` can be given a vector; `c(3,8)`
+`target_clusters` can be given a vector; `c(3,8)`
 
 ### 2.2. Without `Seurat`
 
-Convert your data into `dgCMatrix`.
-
-```r
-library(MASS)
-sdata <- as(data, "sparseMatrix")
-```
-
-Then run,
+Convert your data into `matrix` class. Then run,
 
 ```r
 library(alDFC)
-dfc_res <- dfc(sdata, target_label, return_Model = TRUE)
+dfc_res <- dfc(mat, target_clusters = 8, clsuter_label, return_Model = TRUE)
 ```
 
-`target_label` is a binary vector to identify target clusters.
+`mat` is your data matrix.  
+`cluster_label` is a vector of the cluster names for each cell.
 
 The solution path plots and the cross varidation results of each model are checked as follows.
 
@@ -91,22 +88,22 @@ The solution path plots and the cross varidation results of each model are check
 layout(matrix(1:4,ncol=2))
 
 par(mar=c(3.5, 4, 3.5, 2))
-plot(dfc_mod[["Ridge"]], xlab="")
+plot(dfc_res[["Ridge"]], xlab="")
 mtext(side=3, text="Ridge", line=2.3)
 mtext(side=1, text="log(Lambda)", line=2)
 
 par(mar=c(3.5, 4, 3.5, 2))
-plot(dfc_mod[["Ridge"]]$glmnet.fit, xvar="lambda", xlab="")
+plot(dfc_res[["Ridge"]]$glmnet.fit, xvar="lambda", xlab="")
 mtext(side=3, text="Ridge", line=2.3)
 mtext(side=1, text="log(Lambda)", line=2)
 
 par(mar=c(3.5, 4, 3.5, 2))
-plot(dfc_mod[["AdaLasso"]], xlab="")
+plot(dfc_res[["AdaLasso"]], xlab="")
 mtext(side=3, text="Adaptive Lasso", line=2.3)
 mtext(side=1, text="log(Lambda)", line=2)
 
 par(mar=c(3.5, 4, 3.5, 2))
-plot(dfc_mod[["AdaLasso"]]$glmnet.fit, xvar ="lambda", xlab="")
+plot(dfc_res[["AdaLasso"]]$glmnet.fit, xvar ="lambda", xlab="")
 mtext(side=3, text="Adaptive Lasso", line=2.3)
 mtext(side=1, text="log(Lambda)", line=2)
 ```
@@ -119,13 +116,11 @@ Features in DFC subset are classified into about three groups; *Strong*, *Weak* 
 
 ```r
 ## Seurat
-dfc_class <- dfc_classify(dfc_mod$weights, pbmc)
+dfc_class <- dfc_classify(pbmc3k,dfc_res)
 
 ## Other
-dfc_class <- dfc_classify(dfc_mod$weights, sdata, cluster_vector)
+dfc_class <- dfc_classify(mat,dfc_res,cluster_label)
 ```
-
-`cluster_label` is a vector to identify the cluster where each cell contained.
 
 ## Advanced options
 
