@@ -12,7 +12,10 @@ dfc(data, ...)
 \item{...}{...}
 }
 \value{
-The result of DFC
+\item{Ridge}{The model of ridge regression to calculate penalry.}
+\item{AdaLasso}{The model of Adaptive Lasso for DFC extraction.}
+\item{weights}{A data frame of extracted features and the weights. When
+return_Model set FALSE, only weigths are returned.}
 }
 \description{
 Extract DFC

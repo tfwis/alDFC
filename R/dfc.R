@@ -28,6 +28,8 @@
 #' @importFrom Seurat GetAssay
 #' @importFrom Seurat GetAssayData
 #' @importFrom Seurat %||%
+#' 
+#' @export
 #'
 dfc.Seurat <- function(
     data, target_clusters, assay = NULL,
@@ -75,12 +77,14 @@ dfc.Seurat <- function(
 #' \item{AdaLasso}{The model of Adaptive Lasso for DFC extraction.}
 #' \item{weights}{A data frame of extracted features and the weights. When
 #' return_Model set FALSE, only weigths are returned.}
+#' 
+#' @export
 #'
 dfc.matrix <- function(
-    data, target_clusters, cluster_label,
+    data, target_clusters, cluster_label = NULL,
     gamma = 1, return_Model = FALSE, seed = NULL,
-    SIS = TRUE, min_feature = NULL, max_feature = NULL,
-    lambda_penalty = "1se", lambda_weight = "1se"
+    lambda_penalty = "1se", lambda_weight = "1se",
+    SIS = TRUE, min_feature = NULL, max_feature = NULL
     ) {
   if(ncol(data)!=length(target_label)){
     stop("The column numbers and the label lengths must match.")

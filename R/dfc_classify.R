@@ -11,10 +11,12 @@
 #' @param cluster_threshold Parameter to control expression specificity of
 #' strong feature.
 #'
-#' @importFrom stats cor
-#'
 #' @returns Result data frame with DFC class.
-#'
+#' 
+#' @importFrom stats cor
+#' 
+#' @export
+#' 
 dfc_classify.Seurat <- function(
     data, dfc_res, assay = NULL,
     rate_threshold = 0.25, cluster_threshold = NULL
@@ -65,9 +67,11 @@ dfc_classify.Seurat <- function(
 #' @param cluster_threshold Parameter to control expression specificity of
 #' strong feature.
 #'
+#' @returns Result data frame with DFC class.
+#'
 #' @importFrom stats cor
 #'
-#' @returns Result data frame with DFC class.
+#' @export
 #'
 dfc_classify.matrix <- function(
     data, dfc_res, cluster_label,

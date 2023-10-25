@@ -7,15 +7,15 @@
 \method{dfc}{matrix}(
   data,
   target_clusters,
-  cluster_label,
+  cluster_label = NULL,
   gamma = 1,
   return_Model = FALSE,
   seed = NULL,
+  lambda_penalty = "1se",
+  lambda_weight = "1se",
   SIS = TRUE,
   min_feature = NULL,
-  max_feature = NULL,
-  lambda_penalty = "1se",
-  lambda_weight = "1se"
+  max_feature = NULL
 )
 }
 \arguments{
@@ -31,12 +31,6 @@
 
 \item{seed}{seed}
 
-\item{SIS}{Perform screening by SIS or not}
-
-\item{min_feature}{minimum number to extract}
-
-\item{max_feature}{maximum number to extract}
-
 \item{lambda_penalty}{Parameter to control which lambda is used to calculate
 penalty, "min" or "1se". "min" : binomial deviance is minimized.
 "1se" : the number of extracted features are minimized within error range of
@@ -44,6 +38,12 @@ penalty, "min" or "1se". "min" : binomial deviance is minimized.
 
 \item{lambda_weight}{Parameter to control which lambda is used to calculate
 weights.}
+
+\item{SIS}{Perform screening by SIS or not}
+
+\item{min_feature}{minimum number to extract}
+
+\item{max_feature}{maximum number to extract}
 }
 \value{
 \item{Ridge}{The model of ridge regression to calculate penalry.}

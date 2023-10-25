@@ -7,12 +7,12 @@
 dfc_classify(data, ...)
 }
 \arguments{
-\item{data}{The same one as when \code{dfc()} is run.#'}
+\item{data}{The same one as when \code{dfc()} is run.'}
 
 \item{...}{...}
 }
 \value{
-Thr result data frame with DFC class.
+Result data frame with DFC class.
 }
 \description{
 Specificity based DFC classification
