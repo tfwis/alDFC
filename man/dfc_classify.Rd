@@ -4,33 +4,15 @@
 \alias{dfc_classify}
 \title{Specificity based DFC classification}
 \usage{
-dfc_classify(
-  dfc_res,
-  data,
-  cluster_label = NA,
-  rate_threshold = 0.25,
-  cluster_threshold = NULL
-)
+dfc_classify(data, ...)
 }
 \arguments{
-\item{dfc_res}{A result of \code{dfc()}.}
+\item{data}{The same one as when \code{dfc()} is run.#'}
 
-\item{data}{The same one as when \code{dfc()} is run.}
-
-\item{cluster_label}{A vector denoting the clusters of each cell
-corresponding to the columns of data.}
-
-\item{rate_threshold}{Parameter to judge which the feature is expressed or
-not in the cluster. When the rate of expressed cells in a cluster is greater
-than this parameter, the cluster is assumed expressing.}
-
-\item{cluster_threshold}{Parameter to control expression specificity of
-strong feature. When the number of expressed cluster is greater than this
-parameter, the feature is assumed weak feature. In default, 30\% of total
-clusters.}
+\item{...}{...}
 }
 \value{
-Result data frame with DFC class.
+Thr result data frame with DFC class.
 }
 \description{
 Specificity based DFC classification

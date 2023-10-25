@@ -2,6 +2,10 @@
 
 export(dfc)
 export(dfc_classify)
+importFrom(Seurat,"%||%")
+importFrom(Seurat,DefaultAssay)
+importFrom(Seurat,GetAssay)
+importFrom(Seurat,GetAssayData)
 importFrom(glmnet,coef.glmnet)
 importFrom(glmnet,cv.glmnet)
 importFrom(stats,cor)

@@ -7,7 +7,7 @@
 \method{dfc}{Seurat}(
   data,
   target_clusters,
-  target_label = NULL,
+  assay = NULL,
   gamma = 1,
   return_Model = FALSE,
   seed = NULL,
@@ -21,13 +21,12 @@
 \arguments{
 \item{data}{SeuratObject}
 
-\item{target_clusters}{The target cluster number (Only if data class is
-\code{SeuratObject}.)}
+\item{target_clusters}{The target cluster number}
 
-\item{target_label}{Logical or binary vector labeling target clusters. (Only
-if data class is \code{dgCMatrix}.)}
+\item{assay}{The assay to use. In default, the return of DefaultAssay() is
+used}
 
-\item{gamma}{Parameter to control the effect of penalty}
+\item{gamma}{The parameter to control the effect of penalty}
 
 \item{return_Model}{Return regression models or only weights}
 

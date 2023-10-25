@@ -1,13 +1,15 @@
-Package: DFC
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Package: alDFC
+Title: DFC implemented by adaptive Lasso
+Version: 0.0.1
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    person("Takeru", "Fujii", email = "first.last@example.com", role = c("aut", "cre"))
+Description: The tool to Characterize cell populations in sigle cell dataset.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.3
 Imports: glmnet,
-  stats
+  stats, Seurat
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

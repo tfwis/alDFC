@@ -95,48 +95,23 @@ sis <- function(data, label, min_feature = NULL, max_feature = NULL)
 
 #' Extract DFC
 #'
-#' @param data SeuratObject or gene x cell dgCMatrix
-#' @param target_clusters The target cluster number (Only if data class is
-#' `SeuratObject`.)
-#' @param target_label Logical or binary vector labeling target clusters. (Only
-#' if data class is `dgCMatrix`.)
-#' @param gamma Parameter to control the effect of penalty
-#' @param return_Model Return regression models or only weights
-#' @param seed seed
-#' @param lambda_penalty Parameter to control which lambda is used to calculate
-#' penalty, "min" or "1se". "min" : binomial deviance is minimized.
-#' "1se" : the number of extracted features are minimized within error range of
-#' "min".
-#' @param lambda_weight Parameter to control which lambda is used to calculate
-#' weights.
-#' @param SIS Perform screening by SIS or not
-#' @param min_feature minimum number to extract
-#' @param max_feature maximum number to extract
-#'
-#' @returns \item{Ridge}{The model of ridge regression to calculate penalry.}
-#' \item{AdaLasso}{The model of Adaptive Lasso for DFC extraction.}
-#' \item{weights}{A data frame of extracted features and the weights. When
-#' return_Model set FALSE, only weigths are returned.}
+#' @param data SeuratObject or gene x cell Matrix
+#' @param ... ...
+#' @returns The result of DFC
 #'
 #' @export
 #'
-dfc <- function(
-    data, target_clusters = NULL, target_label = NULL,
-    gamma = 1, return_Model = FALSE, seed = NULL,
-    lambda_penalty = "1se", lambda_weight = "1se",
-    SIS = TRUE, min_feature = NULL, max_feature = NULL
-    ) {
-  UseMethod("dfc",data)
+dfc <- function(data, ...) {
+  UseMethod(generic = "dfc",object = data)
 }
 
 #' Extract DFC
 #'
 #' @param data SeuratObject
-#' @param target_clusters The target cluster number (Only if data class is
-#' `SeuratObject`.)
-#' @param target_label Logical or binary vector labeling target clusters. (Only
-#' if data class is `dgCMatrix`.)
-#' @param gamma Parameter to control the effect of penalty
+#' @param target_clusters The target cluster number
+#' @param assay The assay to use. In default, the return of DefaultAssay() is 
+#' used
+#' @param gamma The parameter to control the effect of penalty
 #' @param return_Model Return regression models or only weights
 #' @param seed seed
 #' @param lambda_penalty Parameter to control which lambda is used to calculate
@@ -154,19 +129,29 @@ dfc <- function(
 #' \item{weights}{A data frame of extracted features and the weights. When
 #' return_Model set FALSE, only weigths are returned.}
 #'
+#' @importFrom Seurat DefaultAssay
+#' @importFrom Seurat GetAssay
+#' @importFrom Seurat GetAssayData
+#' @importFrom Seurat %||%
+#'
 dfc.Seurat <- function(
-    data, target_clusters, target_label = NULL,
+    data, target_clusters, assay = NULL,
     gamma = 1, return_Model = FALSE, seed = NULL,
     lambda_penalty = "1se", lambda_weight = "1se",
     SIS = TRUE, min_feature = NULL, max_feature = NULL
     ) {
   cat("Preprocessing...\n")
-  if(is.null(data@assays$RNA@scale.data)) stop("Please, run Seurat::ScaleData")
-  target_label <- data@meta.data$seurat_clusters %in% target_clusters
-  data <- data@assays$RNA@scale.data
-  if(SIS) data <- sis(data, target_label, min_feature, max_feature)
+  assay <- assay %||% DefaultAssay(data)
+  smat <- GetAssayData(GetAssay(data,assay),'scale.data')
+  if(length(smat)==0) {
+    stop("Please, run Seurat::ScaleData")
+  }
+  target_label <- data$seurat_clusters %in% target_clusters
+  if(SIS) {
+    smat <- sis(smat, target_label, min_feature, max_feature)
+  }
   res <- AdaLasso(
-    data = data, label = target_label,
+    data = smat, label = target_label,
     gamma = gamma, return_Model = return_Model, seed = seed,
     lambda_penalty = lambda_penalty, lambda_weight = lambda_weight
   )
@@ -175,11 +160,9 @@ dfc.Seurat <- function(
 
 #' Extract DFC
 #'
-#' @param data dgCMatrix
-#' @param target_clusters The target cluster number (Only if data class is
-#' `SeuratObject`.)
-#' @param target_label Logical or binary vector labeling target clusters. (Only
-#' if data class is `dgCMatrix`.)
+#' @param data scaled count matrix
+#' @param target_clusters The target cluster number
+#' @param cluster_label Logical or binary vector labeling target clusters
 #' @param gamma Parameter to control the effect of penalty
 #' @param return_Model Return regression models or only weights
 #' @param seed seed
@@ -198,8 +181,8 @@ dfc.Seurat <- function(
 #' \item{weights}{A data frame of extracted features and the weights. When
 #' return_Model set FALSE, only weigths are returned.}
 #'
-dfc.dgCMatrix <- function(
-    data, target_clusters = NULL, target_label,
+dfc.matrix <- function(
+    data, target_clusters, cluster_label,
     gamma = 1, return_Model = FALSE, seed = NULL,
     SIS = TRUE, min_feature = NULL, max_feature = NULL,
     lambda_penalty = "1se", lambda_weight = "1se"
@@ -208,7 +191,10 @@ dfc.dgCMatrix <- function(
     stop("The column numbers and the label lengths must match.")
   }
   cat("Preprocessing...\n")
-  if(SIS) data <- sis(data, target_label, min_feature, max_feature)
+  target_label <- cluster_label %in% target_clusters
+  if(SIS) {
+    data <- sis(data, target_label, min_feature, max_feature)
+  }
   res <- AdaLasso(
     data = data, label = target_label,
     gamma = gamma, return_Model = return_Model, seed = seed,
@@ -219,35 +205,22 @@ dfc.dgCMatrix <- function(
 
 #' Specificity based DFC classification
 #'
-#' @param dfc_res A result of `dfc()`.
-#' @param data The same one as when `dfc()` is run.
-#' @param cluster_label A vector denoting the clusters of each cell
-#' corresponding to the columns of data.
-#' @param rate_threshold Parameter to judge which the feature is expressed or
-#' not in the cluster. When the rate of expressed cells in a cluster is greater
-#' than this parameter, the cluster is assumed expressing.
-#' @param cluster_threshold Parameter to control expression specificity of
-#' strong feature. When the number of expressed cluster is greater than this
-#' parameter, the feature is assumed weak feature. In default, 30% of total
-#' clusters.
-#'
-#' @returns Result data frame with DFC class.
+#' @param data The same one as when `dfc()` is run.#'
+#' @param ... ...
+#' @returns Thr result data frame with DFC class.
 #'
 #' @export
 #'
-dfc_classify <- function(
-    dfc_res, data, cluster_label = NA,
-    rate_threshold = 0.25, cluster_threshold = NULL
-    ) {
-  UseMethod("dfc_classify",data)
+dfc_classify <- function(data,...) {
+  UseMethod(generic = "dfc_classify",object = data)
 }
 
 #' Specificity based DFC classification
 #'
-#' @param dfc_res A result of `dfc()`.
 #' @param data The same one as when `dfc()` is run.
-#' @param cluster_label A vector denoting the clusters of each cell
-#' corresponding to the columns of data.
+#' @param dfc_res A result of `dfc()`.
+#' @param assay The assay to use. In default, the return of `DefaultAssay()` is 
+#' used
 #' @param rate_threshold Parameter to judge which the feature is expressed or
 #' not in the cluster.
 #' @param cluster_threshold Parameter to control expression specificity of
@@ -258,16 +231,24 @@ dfc_classify <- function(
 #' @returns Result data frame with DFC class.
 #'
 dfc_classify.Seurat <- function(
-    dfc_res, data, cluster_label = NA,
+    data, dfc_res, assay = NULL,
     rate_threshold = 0.25, cluster_threshold = NULL
     ) {
-  if(class(dfc_res)=="dfc_models") dfc_res <- dfc_res$weights
-  cluster_label <- data@meta.data$seurat_clusters
-  data <- data@assays$RNA@scale.data
-  useg <- intersect(dfc_res$feature,rownames(data))
-  data <- t(data[useg,])
-  splited_data <- split(as.data.frame(data), f=cluster_label)
-  posiRate <- sapply(splited_data, function(x) {
+  if(inherits(dfc_res,"dfc_models")) {
+    stop("Please, input a DFC result object.")
+  }
+  dfc_res <- dfc_res$weights
+  
+  assay <- assay %||% DefaultAssay(data)
+  smat <- GetAssayData(GetAssay(data,assay),'scale.data')
+  if(length(smat)==0) {
+    stop("Please, run Seurat::ScaleData")
+  }
+  cluster_label <- data$seurat_clusters
+  useg <- intersect(dfc_res$feature,rownames(smat))
+  smat <- t(smat[useg,])
+  splited_smat <- split(as.data.frame(smat), f=cluster_label)
+  posiRate <- sapply(splited_smat, function(x) {
     apply(x, 2, function(y) sum(y>min(y))/length(y))
     })
   posiCluster <- apply(posiRate>rate_threshold, 1, sum)
@@ -278,7 +259,7 @@ dfc_classify.Seurat <- function(
     )
   dfc_class <- transform(
     dfc_class,
-    class = ifelse(posiCluster==0, "niche", posiCluster)
+    class = ifelse(posiCluster == 0, "niche", posiCluster)
     )
   dfc_class <- transform(
     dfc_class,
@@ -303,11 +284,15 @@ dfc_classify.Seurat <- function(
 #'
 #' @returns Result data frame with DFC class.
 #'
-dfc_classify.dgCMatrix <- function(
-    dfc_res, data, cluster_label,
+dfc_classify.matrix <- function(
+    data, dfc_res, cluster_label,
     rate_threshold = 0.25, cluster_threshold = NULL
     ) {
-  if(class(dfc_res)=="dfc_models") dfc_res <- dfc_res$weights
+  if(inherits(dfc_res,"dfc_models")) {
+    stop("Please, input a DFC result object.")
+  }
+  dfc_res <- dfc_res$weights
+  
   useg <- intersect(dfc_res$feature,rownames(data))
   data <- t(data[useg,])
   splited_data <- split(as.data.frame(data), f=cluster_label)
@@ -322,12 +307,12 @@ dfc_classify.dgCMatrix <- function(
   )
   dfc_class <- transform(
     dfc_class,
-    class = ifelse(posiCluster==0,
+    class = ifelse(posiCluster == 0,
                    "niche", posiCluster)
   )
   dfc_class <- transform(
     dfc_class,
-    class = ifelse(posiCluster<cluster_threshold,
+    class = ifelse(posiCluster < cluster_threshold,
                    "strong", "weak")
   )
   return(dfc_class)

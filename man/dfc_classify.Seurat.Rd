@@ -5,20 +5,20 @@
 \title{Specificity based DFC classification}
 \usage{
 \method{dfc_classify}{Seurat}(
-  dfc_res,
   data,
-  cluster_label = NA,
+  dfc_res,
+  assay = NULL,
   rate_threshold = 0.25,
   cluster_threshold = NULL
 )
 }
 \arguments{
-\item{dfc_res}{A result of \code{dfc()}.}
-
 \item{data}{The same one as when \code{dfc()} is run.}
 
-\item{cluster_label}{A vector denoting the clusters of each cell
-corresponding to the columns of data.}
+\item{dfc_res}{A result of \code{dfc()}.}
+
+\item{assay}{The assay to use. In default, the return of \code{DefaultAssay()} is
+used}
 
 \item{rate_threshold}{Parameter to judge which the feature is expressed or
 not in the cluster.}

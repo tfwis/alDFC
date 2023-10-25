@@ -2,7 +2,7 @@
 % Please edit documentation in R/dfc.R
 \name{sis}
 \alias{sis}
-\title{Sure independencd screening for pre-screening of features.}
+\title{Sure independence screening for pre-screening of features.}
 \usage{
 sis(data, label, min_feature = NULL, max_feature = NULL)
 }
@@ -19,5 +19,5 @@ sis(data, label, min_feature = NULL, max_feature = NULL)
 screened data
 }
 \description{
-Sure independencd screening for pre-screening of features.
+Sure independence screening for pre-screening of features.
 }
