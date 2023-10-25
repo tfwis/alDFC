@@ -5,7 +5,6 @@
 #' @param data scaled count gene x cell matrix
 #' @param label logical or binary vector labeling target clusters
 #' @param gamma Parameter to control the effect of penalty
-#' @param return_Model Return regression models or only weights
 #' @param lambda_penalty Parameter to control which lambda is used to calculate
 #' penalty
 #' @param lambda_weight Parameter to control which lambda is used to calculate
@@ -21,12 +20,9 @@
 #' @importFrom glmnet coef.glmnet
 #'
 AdaLasso <- function(
-    data, label, gamma = 1,
-    return_Model = TRUE,
-    lambda_penalty = "1se",
-    lambda_weight = "1se",
+    data, label, gamma = 1, lambda_penalty = "1se", lambda_weight = "1se",
     seed = NULL
-) {
+    ) {
   lambda_penalty <- switch(
     lambda_penalty,
     "1se" = "lambda.1se",
@@ -62,16 +58,12 @@ AdaLasso <- function(
   )
   res <- res[res$weight!=0,]
   cat(paste0(nrow(res)," features were selected.\n"))
-  if (return_Model) {
-    models <- list(
-      Ridge = ridge, AdaLasso = alasso,
-      weights = res
+  models <- list(
+    Ridge = ridge, AdaLasso = alasso,
+    weights = res
     )
-    class(models) <- 'dfc_models'
-    return(models)
-  }else{
-    return(res)
-  }
+  class(models) <- 'dfc_models'
+  return(models)
 }
 
 #' Sure independence screening for pre-screening of features.
@@ -83,8 +75,9 @@ AdaLasso <- function(
 #'
 #' @returns screened data
 #'
-sis <- function(data, label, min_feature = NULL, max_feature = NULL)
-{
+sis <- function(
+    data, label, min_feature = NULL, max_feature = NULL
+    ) {
   nsis <- floor(ncol(data)/(4*log(ncol(data))))
   if(!is.null(min_feature)) nsis <- max(min_feature,nsis)
   if(!is.null(max_feature)) nsis <- min(max_feature,nsis)

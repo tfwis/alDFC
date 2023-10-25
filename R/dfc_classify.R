@@ -10,6 +10,7 @@
 #' not in the cluster.
 #' @param cluster_threshold Parameter to control expression specificity of
 #' strong feature.
+#' @param ... ...
 #'
 #' @returns Result data frame with DFC class.
 #' 
@@ -19,7 +20,7 @@
 #' 
 dfc_classify.Seurat <- function(
     data, dfc_res, assay = NULL,
-    rate_threshold = 0.25, cluster_threshold = NULL
+    rate_threshold = 0.25, cluster_threshold = NULL,...
 ) {
   if(!inherits(dfc_res,"dfc_models")) {
     stop("Please, input a DFC result object.")
@@ -66,6 +67,7 @@ dfc_classify.Seurat <- function(
 #' not in the cluster.
 #' @param cluster_threshold Parameter to control expression specificity of
 #' strong feature.
+#' @param ... ...
 #'
 #' @returns Result data frame with DFC class.
 #'
@@ -75,7 +77,7 @@ dfc_classify.Seurat <- function(
 #'
 dfc_classify.matrix <- function(
     data, dfc_res, cluster_label,
-    rate_threshold = 0.25, cluster_threshold = NULL
+    rate_threshold = 0.25, cluster_threshold = NULL,...
 ) {
   if(!inherits(dfc_res,"dfc_models")) {
     stop("Please, input a DFC result object.")

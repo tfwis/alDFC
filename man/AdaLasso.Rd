@@ -8,7 +8,6 @@ AdaLasso(
   data,
   label,
   gamma = 1,
-  return_Model = TRUE,
   lambda_penalty = "1se",
   lambda_weight = "1se",
   seed = NULL
@@ -20,8 +19,6 @@ AdaLasso(
 \item{label}{logical or binary vector labeling target clusters}
 
 \item{gamma}{Parameter to control the effect of penalty}
-
-\item{return_Model}{Return regression models or only weights}
 
 \item{lambda_penalty}{Parameter to control which lambda is used to calculate
 penalty}

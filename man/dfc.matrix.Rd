@@ -9,13 +9,13 @@
   target_clusters,
   cluster_label = NULL,
   gamma = 1,
-  return_Model = FALSE,
   seed = NULL,
   lambda_penalty = "1se",
   lambda_weight = "1se",
   SIS = TRUE,
   min_feature = NULL,
-  max_feature = NULL
+  max_feature = NULL,
+  ...
 )
 }
 \arguments{
@@ -26,8 +26,6 @@
 \item{cluster_label}{Logical or binary vector labeling target clusters}
 
 \item{gamma}{Parameter to control the effect of penalty}
-
-\item{return_Model}{Return regression models or only weights}
 
 \item{seed}{seed}
 
@@ -44,6 +42,8 @@ weights.}
 \item{min_feature}{minimum number to extract}
 
 \item{max_feature}{maximum number to extract}
+
+\item{...}{...}
 }
 \value{
 \item{Ridge}{The model of ridge regression to calculate penalry.}

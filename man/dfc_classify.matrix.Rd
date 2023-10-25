@@ -9,7 +9,8 @@
   dfc_res,
   cluster_label,
   rate_threshold = 0.25,
-  cluster_threshold = NULL
+  cluster_threshold = NULL,
+  ...
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ not in the cluster.}
 
 \item{cluster_threshold}{Parameter to control expression specificity of
 strong feature.}
+
+\item{...}{...}
 }
 \value{
 Result data frame with DFC class.

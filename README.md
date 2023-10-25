@@ -65,7 +65,7 @@ Using `Seurat` object and target number, `dfc()` function extract DFC subset.
 
 ```r
 library(alDFC)
-dfc_res <- dfc(pbmc3k, target_clusters = 8, return_Model = TRUE)
+dfc_res <- dfc(pbmc3k, target_clusters = 8)
 ```
 
 `target_clusters` can be given a vector; `c(3,8)`
@@ -76,7 +76,7 @@ Convert your data into `matrix` class. Then run,
 
 ```r
 library(alDFC)
-dfc_res <- dfc(mat, target_clusters = 8, clsuter_label, return_Model = TRUE)
+dfc_res <- dfc(mat, target_clusters = 8, clsuter_label)
 ```
 
 `mat` is your data matrix.  
