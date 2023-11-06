@@ -47,13 +47,10 @@ dfc_classify.Seurat <- function(
   )
   dfc_class <- transform(
     dfc_class,
-    class = ifelse(posiCluster == 0, "niche", posiCluster)
-  )
-  dfc_class <- transform(
-    dfc_class,
-    class = ifelse(posiCluster<cluster_threshold,
-                   "strong", "weak")
-  )
+    class = ifelse(posiCluster == 0, "niche", 
+                   ifelse(posiCluster<cluster_threshold,
+                          "strong", "weak"))
+    )
   return(dfc_class)
 }
 
@@ -98,13 +95,9 @@ dfc_classify.matrix <- function(
   )
   dfc_class <- transform(
     dfc_class,
-    class = ifelse(posiCluster == 0,
-                   "niche", posiCluster)
-  )
-  dfc_class <- transform(
-    dfc_class,
-    class = ifelse(posiCluster < cluster_threshold,
-                   "strong", "weak")
-  )
+    class = ifelse(posiCluster == 0, "niche",
+                   ifelse(posiCluster < cluster_threshold,
+                          "strong", "weak"))
+    )
   return(dfc_class)
 }
