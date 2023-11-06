@@ -30,11 +30,11 @@ dfc.matrix <- function(
     lambda_penalty = "1se", lambda_weight = "1se", SIS = TRUE, 
     min_feature = NULL, max_feature = NULL,...
 ) {
+  target_label <- cluster_label %in% target_clusters
   if(ncol(data)!=length(target_label)){
     stop("The column numbers and the label lengths must match.")
   }
   cat("Preprocessing...\n")
-  target_label <- cluster_label %in% target_clusters
   if(SIS) {
     data <- sis(data, target_label, min_feature, max_feature)
   }
