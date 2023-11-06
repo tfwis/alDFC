@@ -15,8 +15,7 @@
 #' @export
 #'
 dfc_classify.matrix <- function(
-    data, dfc_res, 
-    rate_threshold = 0.25, cluster_threshold = NULL,
+    data, dfc_res, rate_threshold = 0.25, cluster_threshold = NULL,
     eval_method = 'min', ...
 ) {
   if(!inherits(dfc_res,"dfc_models")) {
