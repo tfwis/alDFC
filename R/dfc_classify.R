@@ -16,7 +16,8 @@
 #'
 dfc_classify.matrix <- function(
     data, dfc_res, 
-    rate_threshold = 0.25, cluster_threshold = NULL,...
+    rate_threshold = 0.25, cluster_threshold = NULL,
+    eval_method = 'min', ...
 ) {
   if(!inherits(dfc_res,"dfc_models")) {
     stop("Please, input a DFC result object.")
@@ -31,11 +32,16 @@ dfc_classify.matrix <- function(
   
   split_data <- split(as.data.frame(data), f=cluster_label)
   posiRate <- sapply(split_data, function(x) {
-    apply(x, 2, function(y) sum(y>min(y))/length(y))
-  })
+    switch(eval_method,
+           'min' = apply(x, 2, function(y) sum(y>min(y))/length(y)),
+           'zero' = apply(x, 2, function(y) sum(y>0)/length(y)))
+    })
   posiCluster <- apply(posiRate>rate_threshold, 1, sum)
   target_pn <- apply(data[target_label,], 2, function(y) {
-    (sum(y>min(y))/length(y))>rate_threshold})
+    switch(eval_method,
+           'min' = (sum(y>min(y))/length(y))>rate_threshold,
+           'zero' = (sum(y>0)/length(y))>rate_threshold)
+    })
   dfc_class <- data.frame(
     weight = dfc_weights$weight,
     posiCluster = posiCluster,
