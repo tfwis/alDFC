@@ -21,24 +21,25 @@ dfc_classify.matrix <- function(
   if(!inherits(dfc_res,"dfc_models")) {
     stop("Please, input a DFC result object.")
   }
-  dfc_res <- dfc_res$weights
+  dfc_weights <- dfc_res$weights
   cluster_label <- dfc_res$cluster_label
   target_label <- dfc_res$target_label
-  useg <- intersect(dfc_res$feature,rownames(data))
+  useg <- intersect(dfc_weights$feature,rownames(data))
   data <- t(data[useg,])
-  if(is.null(cluster_threshold)) cluster_threshold <- floor(0.3*ncol(posiRate))
+  nCluster <- length(unique(cluster_label))
+  if(is.null(cluster_threshold)) cluster_threshold <- floor(0.3*nCluster)
   
-  splited_data <- split(data, f=cluster_label)
-  posiRate <- sapply(splited_data, function(x) {
+  split_data <- split(as.data.frame(data), f=cluster_label)
+  posiRate <- sapply(split_data, function(x) {
     apply(x, 2, function(y) sum(y>min(y))/length(y))
   })
   posiCluster <- apply(posiRate>rate_threshold, 1, sum)
-  target_pn <- apply(as.data.frame(data[target_label,]), 2, function(y) {
-    (sum(y>min(y))/length(y))>posiRate})
+  target_pn <- apply(data[target_label,], 2, function(y) {
+    (sum(y>min(y))/length(y))>rate_threshold})
   dfc_class <- data.frame(
-    weight = dfc_res$weight,
+    weight = dfc_weights$weight,
     posiCluster = posiCluster,
-    target_expr = target_pn
+    expr_inTarget = target_pn
   )
   dfc_class <- transform(
     dfc_class,
@@ -69,7 +70,6 @@ dfc_classify.matrix <- function(
 dfc_classify.Seurat <- function(
     data, dfc_res, use.slot = 'scale.data', assay = NULL, ...
 ) {
-  
   if(!inherits(dfc_res,"dfc_models")) {
     stop("Please, input a DFC result object.")
   }
@@ -83,12 +83,9 @@ dfc_classify.Seurat <- function(
   if(!inherits(smat,"matrix")) {
     smat <- as.matrix(smat)
   }
-  cluster_label <- data$seurat_clusters
   useg <- intersect(dfc_res_weight$feature,rownames(smat))
-  smat <- as.matrix(t(smat[useg,]))
-  
-  dfc_class <- dfc_classify(data = smat,dfc_res = dfc_res,
-                            cluster_label = cluster_label, ...)
+  smat <- as.matrix(smat[useg,])
+  dfc_class <- dfc_classify(data = smat,dfc_res = dfc_res,...)
   return(dfc_class)
 }
 

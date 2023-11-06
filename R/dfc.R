@@ -34,8 +34,8 @@ dfc.matrix <- function(
   if(ncol(data)!=length(target_label)){
     stop("The column numbers and the label lengths must match.")
   }
-  cat("Preprocessing...\n")
   if(SIS) {
+    cat("Running SIS...\n")
     data <- sis(data, target_label, min_feature, max_feature)
   }
   res <- AdaLasso(
