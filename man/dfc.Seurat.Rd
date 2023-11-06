@@ -4,19 +4,7 @@
 \alias{dfc.Seurat}
 \title{Extract DFC}
 \usage{
-\method{dfc}{Seurat}(
-  data,
-  target_clusters,
-  assay = NULL,
-  gamma = 1,
-  seed = NULL,
-  lambda_penalty = "1se",
-  lambda_weight = "1se",
-  SIS = TRUE,
-  min_feature = NULL,
-  max_feature = NULL,
-  ...
-)
+\method{dfc}{Seurat}(data, target_clusters, assay = NULL, ...)
 }
 \arguments{
 \item{data}{SeuratObject}
@@ -24,25 +12,7 @@
 \item{target_clusters}{The target cluster number}
 
 \item{assay}{The assay to use. In default, the return of DefaultAssay() is
-used}
-
-\item{gamma}{The parameter to control the effect of penalty}
-
-\item{seed}{seed}
-
-\item{lambda_penalty}{Parameter to control which lambda is used to calculate
-penalty, "min" or "1se". "min" : binomial deviance is minimized.
-"1se" : the number of extracted features are minimized within error range of
-"min".}
-
-\item{lambda_weight}{Parameter to control which lambda is used to calculate
-weights.}
-
-\item{SIS}{Perform screening by SIS or not}
-
-\item{min_feature}{minimum number to extract}
-
-\item{max_feature}{maximum number to extract}
+used.}
 
 \item{...}{...}
 }

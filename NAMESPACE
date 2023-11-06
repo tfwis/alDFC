@@ -3,6 +3,7 @@
 S3method(dfc,Seurat)
 S3method(dfc,matrix)
 S3method(dfc_classify,Seurat)
+S3method(dfc_classify,dgCMatrix)
 S3method(dfc_classify,matrix)
 export(dfc)
 export(dfc_classify)

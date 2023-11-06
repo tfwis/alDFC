@@ -7,7 +7,6 @@
 \method{dfc_classify}{matrix}(
   data,
   dfc_res,
-  cluster_label,
   rate_threshold = 0.25,
   cluster_threshold = NULL,
   ...
@@ -17,9 +16,6 @@
 \item{data}{The same one as when \code{dfc()} is run.}
 
 \item{dfc_res}{A result of \code{dfc()}.}
-
-\item{cluster_label}{A vector denoting the clusters of each cell
-corresponding to the columns of data.}
 
 \item{rate_threshold}{Parameter to judge which the feature is expressed or
 not in the cluster.}

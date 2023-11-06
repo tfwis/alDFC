@@ -7,7 +7,7 @@
 \method{dfc}{matrix}(
   data,
   target_clusters,
-  cluster_label = NULL,
+  cluster_label,
   gamma = 1,
   seed = NULL,
   lambda_penalty = "1se",
