@@ -28,7 +28,7 @@ dfc_classify.matrix <- function(
   data <- t(data[useg,])
   if(is.null(cluster_threshold)) cluster_threshold <- floor(0.3*ncol(posiRate))
   
-  splited_data <- split(as.data.frame(data), f=cluster_label)
+  splited_data <- split(data, f=cluster_label)
   posiRate <- sapply(splited_data, function(x) {
     apply(x, 2, function(y) sum(y>min(y))/length(y))
   })
@@ -79,6 +79,9 @@ dfc_classify.Seurat <- function(
   smat <- GetAssayData(GetAssay(data,assay),slot = use.slot)
   if(length(smat)==0) {
     stop("Please, run Seurat::ScaleData")
+  }
+  if(!inherits(smat,"matrix")) {
+    smat <- as.matrix(smat)
   }
   cluster_label <- data$seurat_clusters
   useg <- intersect(dfc_res_weight$feature,rownames(smat))
