@@ -46,7 +46,7 @@ dfc_classify.matrix <- function(
   dfc_class <- transform(
     dfc_class,
     class = ifelse(posiCluster == 0, "niche",
-                   ifelse(!target_pn,"weak",
+                   ifelse(dfc_class$weight<0,"weak",
                           ifelse(posiCluster < cluster_threshold,
                                  "strong", "weak")))
     )

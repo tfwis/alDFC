@@ -9,6 +9,7 @@
   dfc_res,
   rate_threshold = 0.25,
   cluster_threshold = NULL,
+  eval_method = "min",
   ...
 )
 }
