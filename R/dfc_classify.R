@@ -29,18 +29,15 @@ dfc_classify.matrix <- function(
   data <- t(data[useg,])
   nCluster <- length(unique(cluster_label))
   if(is.null(cluster_threshold)) cluster_threshold <- floor(0.3*nCluster)
+  eval_fun <- function(x) switch(eval_method,'min' = min(x),'zero' = 0)
   
   split_data <- split(as.data.frame(data), f=cluster_label)
   posiRate <- sapply(split_data, function(x) {
-    switch(eval_method,
-           'min' = apply(x, 2, function(y) sum(y>min(y))/length(y)),
-           'zero' = apply(x, 2, function(y) sum(y>0)/length(y)))
+    apply(x, 2, function(y) sum(y>eval_fun(y))/length(y))
     })
   posiCluster <- apply(posiRate>rate_threshold, 1, sum)
   target_pn <- apply(data[target_label,], 2, function(y) {
-    switch(eval_method,
-           'min' = (sum(y>min(y))/length(y))>rate_threshold,
-           'zero' = (sum(y>0)/length(y))>rate_threshold)
+    (sum(y>eval_fun(y))/length(y)) > rate_threshold
     })
   dfc_class <- data.frame(
     weight = dfc_weights$weight,
