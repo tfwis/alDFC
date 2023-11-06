@@ -119,7 +119,7 @@ Features in DFC subset are classified into about three groups; *Strong*, *Weak* 
 dfc_class <- dfc_classify(pbmc3k,dfc_res)
 
 ## Other
-dfc_class <- dfc_classify(mat,dfc_res,cluster_label)
+dfc_class <- dfc_classify(mat,dfc_res)
 ```
 
 ## Advanced options
