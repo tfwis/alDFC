@@ -40,8 +40,7 @@ dfc_classify.matrix <- function(
     })
   dfc_class <- data.frame(
     weight = dfc_weights$weight,
-    posiCluster = posiCluster,
-    expr_inTarget = target_pn
+    posiCluster = posiCluster
   )
   dfc_class <- transform(
     dfc_class,
